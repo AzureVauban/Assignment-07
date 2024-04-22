@@ -88,54 +88,120 @@ namespace CS3358_SP2024_A7
 
    p_queue::p_queue(size_type initial_capacity)
    {
-      cerr << "p_queue() not implemented yet" << endl;
+      this->used = 0;
+      if (initial_capacity < 1) // making sure capacity is not zero or neg
+         capacity = DEFAULT_CAPACITY;
+      heap = new ItemType[capacity];
+//!      cerr << "p_queue() not implemented yet" << endl;
    }
 
    p_queue::p_queue(const p_queue& src)
    {
-      cerr << "p_queue(const p_queue&) not implemented yet" << endl;
+      heap = new ItemType[capacity];
+
+      // copy the heap
+      for (size_type i = 0; i < capacity; ++i)
+         heap[i] = src.heap[i];
+//!      cerr << "p_queue(const p_queue&) not implemented yet" << endl;
    }
 
    p_queue::~p_queue()
    {
-      cerr << "~p_queue() not implemented yet" << endl;
+//!      cerr << "~p_queue() not implemented yet" << endl;
+      delete[] heap;
+      heap = nullptr;
    }
 
    // MODIFICATION MEMBER FUNCTIONS
    p_queue& p_queue::operator=(const p_queue& rhs)
    {
-      cerr << "operator=(const p_queue&) not implemented yet" << endl;
+//!      cerr << "operator=(const p_queue&) not implemented yet" << endl;
+   if (this != &rhs) { //if this==this, just return 
+      ItemType *temp_heap = new ItemType[rhs.capacity];
+
+      for (size_type i = 0; i < rhs.used; ++i)
+         temp_heap[i] = rhs.heap[i];
+
+      delete[] heap;
+
+      heap = temp_heap;
+      capacity = rhs.capacity;
+      used = rhs.used;
+   }
       return *this;
    }
 
    void p_queue::push(const value_type& entry, size_type priority)
    {
-      cerr << "push(const value_type&, size_type) not implemented yet" << endl;
+//!      cerr << "push(const value_type&, size_type) not implemented yet" << endl;
+         //check capacity 
+         if (used == capacity) {
+            resize(size_type(1.5 * capacity) + 1);
+         }
+         size_type index = used;
+         heap[used].data = entry;
+         heap[used].priority = priority;
+         ++used;
+
+         // swap index while parent < child
+         while (index != 0 && (parent_priority(index) < heap[index].priority))
+         {
+            swap_with_parent(index); // swap while parent is < child
+            index = parent_index(index);
+         }
    }
 
    void p_queue::pop()
    {
-      cerr << "pop() not implemented yet" << endl;
+//!      cerr << "pop() not implemented yet" << endl;
+assert(size() > 0);
+
+if (used == 1)
+{
+   --used;
+   return;
+}
+
+heap[0].data = heap[used - 1].data;
+
+heap[0].priority = heap[used - 1].priority;
+--used; // why not this->--used? IDE wouldnt allow for it,
+        // although not needed it helps improve readability 
+
+size_type tempP_index = 0,
+          tempC_index = 0;
+
+while (!is_leaf(tempP_index) && heap[tempP_index].priority <=
+                                    big_child_priority(tempP_index))
+{
+   tempC_index = big_child_index(tempP_index);
+   swap_with_parent(big_child_index(tempP_index));
+   tempP_index = tempC_index;
+}
    }
 
    // CONSTANT MEMBER FUNCTIONS
 
    p_queue::size_type p_queue::size() const
    {
-      cerr << "size() not implemented yet" << endl;
-      return 0; // dummy return value
+//!      cerr << "size() not implemented yet" << endl;
+//!      return 0; // dummy return value
+return this->used;
    }
 
    bool p_queue::empty() const
    {
-      cerr << "empty() not implemented yet" << endl;
-      return false; // dummy return value
+//!      cerr << "empty() not implemented yet" << endl;
+//!      return false; // dummy return value
+return this->used == 0;
    }
 
    p_queue::value_type p_queue::front() const
    {
-      cerr << "front() not implemented yet" << endl;
-      return value_type(); // dummy return value
+//!      cerr << "front() not implemented yet" << endl;
+//!      return value_type(); // dummy return value
+assert(this->size() > 0);
+return heap[0].data;
    }
 
    // PRIVATE HELPER FUNCTIONS
@@ -148,7 +214,18 @@ namespace CS3358_SP2024_A7
    //       NOTE: All existing items in the p_queue are preserved and
    //             used remains unchanged.
    {
-      cerr << "resize(size_type) not implemented yet" << endl;
+//!      cerr << "resize(size_type) not implemented yet" << endl;
+if (new_capacity < used)
+   new_capacity = used;
+
+ItemType *temp_heap = new ItemType[new_capacity];
+
+for (size_type i = 0; i < used; ++i)
+   temp_heap[i] = heap[i];
+
+delete[] heap;
+heap = temp_heap;
+capacity = new_capacity;
    }
 
    bool p_queue::is_leaf(size_type i) const
