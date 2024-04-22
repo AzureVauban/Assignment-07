@@ -88,10 +88,11 @@ namespace CS3358_SP2024_A7
 
    p_queue::p_queue(size_type initial_capacity)
    {
+      this->capacity = 0;
       this->used = 0;
       if (initial_capacity < 1) // making sure capacity is not zero or neg
          capacity = DEFAULT_CAPACITY;
-      heap = new ItemType[capacity];
+      this->heap = new ItemType[capacity];
       //!      cerr << "p_queue() not implemented yet" << endl;
    }
 

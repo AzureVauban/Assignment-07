@@ -4,6 +4,7 @@
 #include <iostream>         // provides cout and cin
 #include <cstdlib>          // provides EXIT_SUCCESS and size_t
 #include "DPQueue.h"        // with value_type defined as int
+#include "DPQueue.cpp"
 
 using namespace std;
 using namespace CS3358_SP2024_A7;
