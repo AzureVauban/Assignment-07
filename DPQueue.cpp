@@ -238,7 +238,7 @@ namespace CS3358_SP2024_A7
    {
       //!      cerr << "is_leaf(size_type) not implemented yet" << endl;
       //!      return false; // dummy return value
-      assert(!(is_leaf(i)));
+      assert(!(is_leaf(i))); //! SEGMENTUAL FAULT
 
       size_type iLHSC = (i * 2) + 1;
       size_type iRHSC = (i * 2) + 2;
