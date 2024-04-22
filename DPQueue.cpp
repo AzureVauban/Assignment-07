@@ -98,10 +98,10 @@ namespace CS3358_SP2024_A7
 
    p_queue::p_queue(const p_queue &src)
    {
-      heap = new ItemType[capacity];
+      heap = new ItemType[src.capacity];
 
       // copy the heap
-      for (size_type i = 0; i < capacity; ++i)
+      for (size_type i = 0; i < src.capacity; ++i)
          heap[i] = src.heap[i];
       //!      cerr << "p_queue(const p_queue&) not implemented yet" << endl;
    }
@@ -124,11 +124,11 @@ namespace CS3358_SP2024_A7
          for (size_type i = 0; i < rhs.used; ++i)
             temp_heap[i] = rhs.heap[i];
 
-         delete[] heap;
+         delete[] rhs.heap;
 
-         heap = temp_heap;
-         capacity = rhs.capacity;
-         used = rhs.used;
+         this->heap = temp_heap;
+         this->capacity = rhs.capacity;
+         this->used = rhs.used;
       }
       return *this;
    }
