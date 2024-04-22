@@ -233,8 +233,25 @@ capacity = new_capacity;
    // Post: If the item at heap[i] has no children, true has been
    //       returned, otherwise false has been returned.
    {
-      cerr << "is_leaf(size_type) not implemented yet" << endl;
-      return false; // dummy return value
+//!      cerr << "is_leaf(size_type) not implemented yet" << endl;
+//!      return false; // dummy return value
+assert(!(is_leaf(i)));
+
+size_type iLHSC = (i * 2) + 1;
+size_type iRHSC = (i * 2) + 2;
+
+if (i == 0)
+{
+   if (heap[1].priority >= heap[2].priority)
+      return 1;
+   else
+      return 2;
+}
+
+if (iRHSC < used && heap[iRHSC].priority > heap[iLHSC].priority)
+   return iRHSC;
+else
+   return iLHSC;
    }
 
    p_queue::size_type
@@ -243,8 +260,12 @@ capacity = new_capacity;
    // Post: The index of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      cerr << "parent_index(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+//!      cerr << "parent_index(size_type) not implemented yet" << endl;
+//!      return 0; // dummy return value
+assert(i > 0);
+assert(i < used);
+
+return ((i - 1) / 2);
    }
 
    p_queue::size_type
@@ -253,8 +274,11 @@ capacity = new_capacity;
    // Post: The priority of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      cerr << "parent_priority(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+//!      cerr << "parent_priority(size_type) not implemented yet" << endl;
+//!      return 0; // dummy return value
+assert(i > 0);
+assert(i < used);
+return heap[parent_index(i)].priority;
    }
 
    p_queue::size_type
@@ -265,8 +289,25 @@ capacity = new_capacity;
    //       (The bigger child is the one whose priority is no smaller
    //       than that of the other child, if there is one.)
    {
-      cerr << "big_child_index(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+//!      cerr << "big_child_index(size_type) not implemented yet" << endl;
+//!      return 0; // dummy return value
+assert(!(is_leaf(i)));
+
+size_type i_lhsc = (i * 2) + 1;
+size_type i_rhsc = (i * 2) + 2;
+
+if (i == 0)
+{
+   if (heap[1].priority >= heap[2].priority)
+      return 1;
+   else
+      return 2;
+}
+
+if (i_rhsc < used && heap[i_rhsc].priority > heap[i_lhsc].priority)
+   return i_rhsc;
+else
+   return i_lhsc;
    }
 
    p_queue::size_type
@@ -277,15 +318,27 @@ capacity = new_capacity;
    //       (The bigger child is the one whose priority is no smaller
    //       than that of the other child, if there is one.)
    {
-      cerr << "big_child_priority(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+//!      cerr << "big_child_priority(size_type) not implemented yet" << endl;
+//!      return 0; // dummy return value
+assert(!(is_leaf(i)));
+return heap[big_child_index(i)].priority;
    }
 
    void p_queue::swap_with_parent(size_type i)
    // Pre:  (i > 0) && (i < used)
    // Post: The item at heap[i] has been swapped with its parent.
    {
-      cerr << "swap_with_parent(size_type) not implemented yet" << endl;
+//!      cerr << "swap_with_parent(size_type) not implemented yet" << endl;
+assert(i > 0);
+assert(i < used);
+
+size_type parent_idx = parent_index(i);
+
+ItemType temp_item = heap[parent_idx];
+
+heap[parent_idx] = heap[i];
+
+heap[i] = temp_item;
    }
 }
 
