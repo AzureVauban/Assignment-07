@@ -137,14 +137,14 @@ namespace CS3358_SP2024_A7
    {
       //!      cerr << "push(const value_type&, size_type) not implemented yet" << endl;
       // check capacity
-      if (used == capacity)
+      if (this->used <= capacity)
       {
          resize(size_type(1.5 * capacity) + 1);
       }
-      size_type index = used;
-      heap[used].data = entry;
-      heap[used].priority = priority;
-      ++used;
+      size_type index = this->used;
+      this->heap[used].data = entry;
+      this->heap[used].priority = priority;
+      this->used +=1;
 
       // swap index while parent < child
       while (index != 0 && (parent_priority(index) < heap[index].priority))
@@ -162,9 +162,7 @@ namespace CS3358_SP2024_A7
       if (used == 1)
       {
          --used;
-         return;
-      }
-
+      } else {
       heap[0].data = heap[used - 1].data;
 
       heap[0].priority = heap[used - 1].priority;
@@ -180,7 +178,9 @@ namespace CS3358_SP2024_A7
          tempC_index = big_child_index(tempP_index);
          swap_with_parent(big_child_index(tempP_index));
          tempP_index = tempC_index;
+         }
       }
+
    }
 
    // CONSTANT MEMBER FUNCTIONS
@@ -218,17 +218,17 @@ namespace CS3358_SP2024_A7
    //             used remains unchanged.
    {
       //!      cerr << "resize(size_type) not implemented yet" << endl;
-      if (new_capacity < used)
-         new_capacity = used;
+      if (new_capacity < this->used)
+         new_capacity = this->used;
 
       ItemType *temp_heap = new ItemType[new_capacity];
 
       for (size_type i = 0; i < used; ++i)
-         temp_heap[i] = heap[i];
+         temp_heap[i] = this->heap[i];
 
-      delete[] heap;
-      heap = temp_heap;
-      capacity = new_capacity;
+      delete[] this->heap;
+      this->heap = temp_heap;
+      this->capacity = new_capacity;
    }
 
    bool p_queue::is_leaf(size_type i) const
