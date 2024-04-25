@@ -157,30 +157,47 @@ namespace CS3358_SP2024_A7
    void p_queue::pop()
    {
       //!      cerr << "pop() not implemented yet" << endl;
+//!      assert(size() > 0);
+//!
+//!      if (used == 1)
+//!      {
+//!         --used;
+//!      } else {
+//!         this->heap[0].data = this->heap[used - 1].data;
+//!
+//!         this->heap[0].priority = this->heap[used - 1].priority;
+//!         this->used -= 1; // why not this->--used? IDE wouldnt allow for it,
+//!                          // although not needed it helps improve readability
+//!
+//!         size_type tempP_index = 0,
+//!                   tempC_index = 0;
+//!
+//!         while (!this->is_leaf(tempP_index) && this->heap[tempP_index].priority <=
+//!                                                   this->big_child_priority(tempP_index))
+//!         {
+//!            tempC_index = this->big_child_index(tempP_index);
+//!            this->swap_with_parent(big_child_index(tempP_index));
+//!            tempP_index = tempC_index;
+//!         }
+//!      }
       assert(size() > 0);
-
       if (used == 1)
       {
          --used;
-      } else {
-         this->heap[0].data = this->heap[used - 1].data;
-
-         this->heap[0].priority = this->heap[used - 1].priority;
-         this->used -= 1; // why not this->--used? IDE wouldnt allow for it,
-                          // although not needed it helps improve readability
-
-         size_type tempP_index = 0,
-                   tempC_index = 0;
-
-         while (!this->is_leaf(tempP_index) && this->heap[tempP_index].priority <=
-                                                   this->big_child_priority(tempP_index))
-         {
-            tempC_index = this->big_child_index(tempP_index);
-            this->swap_with_parent(big_child_index(tempP_index));
-            tempP_index = tempC_index;
-         }
       }
-
+      else
+      {
+         size_type entry = 0;
+         heap[entry] = heap[used - 1];
+         while ((!is_leaf(entry)) && (heap[entry].priority <=
+                                      big_child_priority(entry)))
+         {
+            size_type old_entry = big_child_index(entry);
+            swap_with_parent(big_child_index(entry));
+            entry = old_entry;
+         }
+         --used;
+      }
    }
 
    // CONSTANT MEMBER FUNCTIONS
@@ -240,8 +257,8 @@ namespace CS3358_SP2024_A7
       //!      return false; // dummy return value
       assert(!(is_leaf(i))); //! SEGMENTUAL FAULT
 
-      size_type iLHSC = (i * 2) + 1;
-      size_type iRHSC = (i * 2) + 2;
+// 1     size_type iLHSC = (i * 2) + 1;
+//1      size_type iRHSC = (i * 2) + 2;
 
 //!      if (i == 0)
 //!      {
@@ -259,10 +276,14 @@ namespace CS3358_SP2024_A7
       //size_type iRHSC = (i * 2) + 2;
 
       // Check if the current node has no children
-      if (iLHSC >= used && iRHSC >= used)
+//1      if (iLHSC >= used && iRHSC >= used)
+//1         return true;
+//1      else
+//1         return false;
+      assert(i < used);
+      if (((i * 2) + 1) >= used)
          return true;
-      else
-         return false;
+      return false;
    }
 
    p_queue::size_type
