@@ -163,21 +163,21 @@ namespace CS3358_SP2024_A7
       {
          --used;
       } else {
-      heap[0].data = heap[used - 1].data;
+         this->heap[0].data = this->heap[used - 1].data;
 
-      heap[0].priority = heap[used - 1].priority;
-      --used; // why not this->--used? IDE wouldnt allow for it,
-              // although not needed it helps improve readability
+         this->heap[0].priority = this->heap[used - 1].priority;
+         this->used -= 1; // why not this->--used? IDE wouldnt allow for it,
+                          // although not needed it helps improve readability
 
-      size_type tempP_index = 0,
-                tempC_index = 0;
+         size_type tempP_index = 0,
+                   tempC_index = 0;
 
-      while (!is_leaf(tempP_index) && heap[tempP_index].priority <=
-                                          big_child_priority(tempP_index))
-      {
-         tempC_index = big_child_index(tempP_index);
-         swap_with_parent(big_child_index(tempP_index));
-         tempP_index = tempC_index;
+         while (!this->is_leaf(tempP_index) && this->heap[tempP_index].priority <=
+                                                   this->big_child_priority(tempP_index))
+         {
+            tempC_index = this->big_child_index(tempP_index);
+            this->swap_with_parent(big_child_index(tempP_index));
+            tempP_index = tempC_index;
          }
       }
 
@@ -243,18 +243,26 @@ namespace CS3358_SP2024_A7
       size_type iLHSC = (i * 2) + 1;
       size_type iRHSC = (i * 2) + 2;
 
-      if (i == 0)
-      {
-         if (heap[1].priority >= heap[2].priority)
-            return 1;
-         else
-            return 2;
-      }
+//!      if (i == 0)
+//!      {
+//!         if (heap[1].priority >= heap[2].priority)
+//!            return 1;
+//!         else
+//!            return 2;
+//!      }
+//!
+//!      if (iRHSC < used && heap[iRHSC].priority > heap[iLHSC].priority)
+//!         return iRHSC;
+//!      else
+//!         return iLHSC;
+      //size_type iLHSC = (i * 2) + 1;
+      //size_type iRHSC = (i * 2) + 2;
 
-      if (iRHSC < used && heap[iRHSC].priority > heap[iLHSC].priority)
-         return iRHSC;
+      // Check if the current node has no children
+      if (iLHSC >= used && iRHSC >= used)
+         return true;
       else
-         return iLHSC;
+         return false;
    }
 
    p_queue::size_type
@@ -337,10 +345,10 @@ namespace CS3358_SP2024_A7
 
       size_type parent_idx = parent_index(i);
 
-      ItemType temp_item = heap[parent_idx];
+      ItemType temp_item = this->heap[parent_idx];
 
-      heap[parent_idx] = heap[i];
+      this->heap[parent_idx] = this->heap[i];
 
-      heap[i] = temp_item;
+      this->heap[i] = temp_item;
    }
 }

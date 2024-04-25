@@ -1,0 +1,23 @@
+ASsign07Test.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\istream(556): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\istream(556): note: the template instantiation context (the oldest one first) is
+ASsign07Test.cpp(115): note: see reference to class template instantiation 'std::basic_istream<char,std::char_traits<char>>' being compiled
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\istream(547): note: while compiling class template member function 'int std::basic_istream<char,std::char_traits<char>>::peek(void)'
+ASsign07Test.cpp(149): note: see the first reference to 'std::basic_istream<char,std::char_traits<char>>::peek' in 'get_priority'
+DPQueue.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(310): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(310): note: the template instantiation context (the oldest one first) is
+DPQueue.cpp(52): note: see reference to class template instantiation 'std::basic_ostream<char,std::char_traits<char>>' being compiled
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130\include\ostream(303): note: while compiling class template member function 'std::basic_ostream<char,std::char_traits<char>> &std::basic_ostream<char,std::char_traits<char>>::operator <<(unsigned int)'
+DPQueue.cpp(63): note: see the first reference to 'std::basic_ostream<char,std::char_traits<char>>::operator <<' in 'CS3358_SP2024_A7::p_queue::print_tree'
+Generating Code...
+C:\Users\halor\OneDrive - Texas State University\Spring 2024\CS 3358 - Data Structures & Algorithms\Assignment 07\DPQueue.cpp(266) : warning C4717: 'CS3358_SP2024_A7::p_queue::is_leaf': recursive on all control paths, function will cause runtime stack overflow
+C:\Users\halor\OneDrive - Texas State University\Spring 2024\CS 3358 - Data Structures & Algorithms\Assignment 07\DPQueue.cpp(266) : warning C4717: 'CS3358_SP2024_A7::p_queue::is_leaf': recursive on all control paths, function will cause runtime stack overflow
+Microsoft (R) Incremental Linker Version 14.38.33135.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:ASsign07Test.exe 
+ASsign07Test.obj 
+DPQueue.h 
+DPQueue.obj 
+DPQueue.h : fatal error LNK1107: invalid or corrupt file: cannot read at 0x1317

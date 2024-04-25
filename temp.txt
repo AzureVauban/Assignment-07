@@ -1,0 +1,1 @@
+cl -Ehsc ASsign07Test.cpp DPQueue.h DPQueue.cpp < Assign07.in > Assign07.out

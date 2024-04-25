@@ -43,7 +43,6 @@ int main()
    cout << "The data of an item of this PQ will be an integer,\n";
    cout << "and the priority associated with each item of this PQ\n";
    cout << "will be a nonnegative integer." << endl;
-
    do
    {
       print_menu();
