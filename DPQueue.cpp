@@ -91,15 +91,13 @@ namespace CS3358_SP2024_A7
       this->capacity = 0;
       this->used = 0;
       if (initial_capacity < 1) // making sure capacity is not zero or neg
-         capacity = DEFAULT_CAPACITY;
-      this->heap = new ItemType[capacity];
+         this->capacity = DEFAULT_CAPACITY;
+      this->heap = new ItemType[this->capacity];
    }
 
    p_queue::p_queue(const p_queue &src)
    {
       heap = new ItemType[src.capacity];
-
-      // copy the heap
       for (size_type i = 0; i < src.capacity; i++)
          heap[i] = src.heap[i];
    }
@@ -114,7 +112,8 @@ namespace CS3358_SP2024_A7
    p_queue &p_queue::operator=(const p_queue &rhs)
    {
       if (this != &rhs)
-      { // if this==this, just return
+      { 
+         // if this==this, just return
          ItemType *temp_heap = new ItemType[rhs.capacity];
 
          for (size_type i = 0; i < rhs.used; i++)
@@ -152,7 +151,7 @@ namespace CS3358_SP2024_A7
    void p_queue::pop()
    {
       assert(size() > 0);
-      if (used == 1)
+      if (this->used == 1)
       {
          this->used -= 1;
       }
@@ -182,7 +181,7 @@ namespace CS3358_SP2024_A7
    bool p_queue::empty() const
    {
       return this->used == 0;
-   };
+   }
 
    p_queue::value_type p_queue::front() const
    {
@@ -200,12 +199,12 @@ namespace CS3358_SP2024_A7
    //       NOTE: All existing items in the p_queue are preserved and
    //             used remains unchanged.
    {
-      if (new_capacity < used)
-         new_capacity = used;
+      if (new_capacity < this->used)
+         new_capacity = this->used;
 
       ItemType *temp_heap = new ItemType[new_capacity];
 
-      for (size_type i = 0; i < used; i++)
+      for (size_type i = 0; i < this->used; i++)
          temp_heap[i] = this->heap[i];
 
       delete[] this->heap;
@@ -243,8 +242,8 @@ namespace CS3358_SP2024_A7
    // Post: The priority of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      assert(i > 0 && i < used);
-      return heap[parent_index(i)].priority;
+      assert(i > 0 && i < this->used);
+      return this->heap[parent_index(i)].priority;
    }
 
    p_queue::size_type
@@ -262,13 +261,13 @@ namespace CS3358_SP2024_A7
 
       if (i == 0)
       {
-         if (heap[1].priority >= heap[2].priority)
+         if (this->heap[1].priority >= this->heap[2].priority)
             return 1;
          else
             return 2;
       }
 
-      if (i_rhsc < used && heap[i_rhsc].priority > heap[i_lhsc].priority)
+      if (i_rhsc<this->used &&this->heap[i_rhsc].priority> this->heap[i_lhsc].priority)
          return i_rhsc;
       else
          return i_lhsc;
@@ -283,16 +282,16 @@ namespace CS3358_SP2024_A7
    //       than that of the other child, if there is one.)
    {
       assert(!(is_leaf(i)));
-      return heap[big_child_index(i)].priority;
+      return this->heap[big_child_index(i)].priority;
    }
 
    void p_queue::swap_with_parent(size_type i)
    // Pre:  (i > 0) && (i < used)
    // Post: The item at heap[i] has been swapped with its parent.
    {
-      assert(i > 0 && i < used);
-      ItemType temp = heap[i];
-      heap[i] = heap[parent_index(i)];
-      heap[parent_index(i)] = temp;
+      assert(i > 0 && i < this->used);
+      ItemType temp = this->heap[i];
+      this->heap[i] = this->heap[parent_index(i)];
+      this->heap[parent_index(i)] = temp;
    }
 }
