@@ -20,10 +20,10 @@
 // NOTE: Private helper functions are implemented at the bottom of
 // this file along with their precondition/postcondition contracts.
 
-#include <cassert>  // provides assert function
-#include <iostream> // provides cin, cout
-#include <iomanip>  // provides setw
-#include <cmath>    // provides log2
+#include <cassert>
+#include <iostream>
+#include <iomanip>
+#include <cmath>
 #include "DPQueue.h"
 
 using namespace std;
@@ -86,64 +86,87 @@ namespace CS3358_SP2024_A7
 
    // CONSTRUCTORS AND DESTRUCTOR
 
-   p_queue::p_queue(size_type initial_capacity)
+   p_queue::p_queue(size_type initial_capacity) : capacity(initial_capacity),
+                                                  used(0)
    {
-      this->capacity = 0;
-      this->used = 0;
-      if (initial_capacity < 1) // making sure capacity is not zero or neg
-         this->capacity = DEFAULT_CAPACITY;
-      this->heap = new ItemType[this->capacity];
+      // Adjust capacity based on user specified initial_capacity.
+      // Any attempt to specify a value <= 0 will be set to default
+      // capacity.
+      if (initial_capacity < 1)
+      {
+         capacity = DEFAULT_CAPACITY;
+      }
+
+      // Allocate new dynamic array based on specified capacity.
+      heap = new ItemType[capacity];
    }
 
-   p_queue::p_queue(const p_queue &src)
+   p_queue::p_queue(const p_queue &src) : capacity(src.capacity), used(src.used)
    {
-      heap = new ItemType[src.capacity];
-      for (size_type i = 0; i < src.capacity; i++)
-         heap[i] = src.heap[i];
+      // Create a new dynamic array based on src capacity.
+      heap = new ItemType[capacity];
+
+      // Deep copy each item src to the new dynamic array.
+      for (size_type index = 0; index < capacity; ++index)
+         heap[index] = src.heap[index];
    }
 
    p_queue::~p_queue()
    {
       delete[] heap;
-      heap = nullptr;
+      heap = 0;
    }
 
    // MODIFICATION MEMBER FUNCTIONS
    p_queue &p_queue::operator=(const p_queue &rhs)
    {
-      if (this != &rhs)
+      // Self-assignment fail safe. Check for self-assignment.
+      // If self-assignment is present then return invoking object.
+      if (this == &rhs)
+         return *this;
+
+      // Create temporary dynamic array to safely assign contents
+      // of array.
+      ItemType *temp_heap = new ItemType[rhs.capacity];
+
+      // Move contents of rhs array to temp
+      for (size_type index = 0; index < rhs.used; ++index)
       {
-         // if this==this, just return
-         ItemType *temp_heap = new ItemType[rhs.capacity];
-
-         for (size_type i = 0; i < rhs.used; i++)
-            temp_heap[i] = rhs.heap[i];
-
-         delete[] rhs.heap;
-
-         this->heap = temp_heap;
-         this->capacity = rhs.capacity;
-         this->used = rhs.used;
+         temp_heap[index] = rhs.heap[index];
       }
+
+      // Deallocate old dynamic array.
+      delete[] heap;
+
+      // Start assigning member variables from rhs.
+      heap = temp_heap;
+      capacity = rhs.capacity;
+      used = rhs.used;
       return *this;
    }
 
    void p_queue::push(const value_type &entry, size_type priority)
    {
-      // check capacity
-      if (this->used <= capacity)
+      // Check to see if we need to resize the dynamic array. If
+      // we do the multiple current capacity by 1.25 and add +1 to
+      // satisfy the resize rule seen in previous assignments.
+      if (used == capacity)
       {
-         this->resize(size_type(1.5 * capacity) + 1);
+         resize(size_type(1.25 * capacity) + 1);
       }
-      size_type index = this->used;
-      this->heap[used].data = entry;
-      this->heap[used].priority = priority;
-      this->used += 1;
 
-      // swap index while parent < child
-      while (index != 0 && (parent_priority(index) < heap[index].priority))
+      size_type index = used;
+
+      // Copy new items into heap and update used.
+      heap[used].data = entry;
+      heap[used].priority = priority;
+      ++used;
+
+      // While the new entry has a priority that is higher than its
+      // parent, swap the new entry with the parent.
+      while (index != 0 && parent_priority(index) < heap[index].priority)
       {
-         swap_with_parent(index); // swap while parent is < child
+         swap_with_parent(index);
          index = parent_index(index);
       }
    }
@@ -151,23 +174,30 @@ namespace CS3358_SP2024_A7
    void p_queue::pop()
    {
       assert(size() > 0);
-      if (this->used == 1)
+      /// Make simple case fast.
+      if (used == 1)
       {
-         this->used -= 1;
+         --used;
+         return;
       }
-      else
+
+      /// Move end data to front.
+      heap[0].data = heap[used - 1].data;
+
+      /// Move end priority to front.
+      heap[0].priority = heap[used - 1].priority;
+      --used;
+
+      /// Create two helper indices.
+      size_type index_parent = 0,
+                index_child = 0;
+
+      /// Swap all parents with children that are larger.
+      while (!is_leaf(index_parent) && heap[index_parent].priority <= big_child_priority(index_parent))
       {
-         // swap element
-         size_type entry = 0;
-         this->heap[entry] = this->heap[this->used - 1];
-         while ((!is_leaf(entry)) && (heap[entry].priority <=
-                                      big_child_priority(entry)))
-         {
-            size_type prev_entry = big_child_index(entry);
-            swap_with_parent(big_child_index(entry));
-            entry = prev_entry;
-         }
-         this->used -= 1;
+         index_child = big_child_index(index_parent);
+         swap_with_parent(big_child_index(index_parent));
+         index_parent = index_child;
       }
    }
 
@@ -175,18 +205,18 @@ namespace CS3358_SP2024_A7
 
    p_queue::size_type p_queue::size() const
    {
-      return this->used;
+      return used;
    }
 
    bool p_queue::empty() const
    {
-      return this->used == 0;
+      return (used == 0);
    }
 
    p_queue::value_type p_queue::front() const
    {
-      assert(this->size() > 0);
-      return this->heap[0].data;
+      assert(size() > 0);
+      return heap[0].data;
    }
 
    // PRIVATE HELPER FUNCTIONS
@@ -199,17 +229,23 @@ namespace CS3358_SP2024_A7
    //       NOTE: All existing items in the p_queue are preserved and
    //             used remains unchanged.
    {
-      if (new_capacity < this->used)
-         new_capacity = this->used;
+      /// Check resize ability to defined new_capacity.
+      if (new_capacity < used)
+      {
+         new_capacity = used;
+      }
 
+      /// Create temp heap to store heap of new_capacity.
       ItemType *temp_heap = new ItemType[new_capacity];
 
-      for (size_type i = 0; i < this->used; i++)
-         temp_heap[i] = this->heap[i];
-
-      delete[] this->heap;
-      this->heap = temp_heap;
-      this->capacity = new_capacity;
+      /// Deep copy items.
+      for (size_type index = 0; index < used; ++index)
+      {
+         temp_heap[index] = heap[index];
+      }
+      delete[] heap;
+      heap = temp_heap;
+      capacity = new_capacity;
    }
 
    bool p_queue::is_leaf(size_type i) const
@@ -217,11 +253,8 @@ namespace CS3358_SP2024_A7
    // Post: If the item at heap[i] has no children, true has been
    //       returned, otherwise false has been returned.
    {
-      assert(i < this->used);
-      if (i >= (this->used - 1) / 2)
-         // if i > (this->used-1)/2, then it is guaranteed a leaf
-         return true;
-      return false;
+      assert(i < used);
+      return (((i * 2) + 1) >= used);
    }
 
    p_queue::size_type
@@ -231,9 +264,8 @@ namespace CS3358_SP2024_A7
    //       been returned.
    {
       assert(i > 0);
-      assert(i < this->used);
-
-      return ((i - 1) / 2);
+      assert(i < used);
+      return static_cast<size_type>((i - 1) / 2);
    }
 
    p_queue::size_type
@@ -242,8 +274,9 @@ namespace CS3358_SP2024_A7
    // Post: The priority of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      assert(i > 0 && i < this->used);
-      return this->heap[parent_index(i)].priority;
+      assert(i > 0);
+      assert(i < used);
+      return heap[parent_index(i)].priority;
    }
 
    p_queue::size_type
@@ -256,21 +289,28 @@ namespace CS3358_SP2024_A7
    {
       assert(!(is_leaf(i)));
 
-      size_type i_lhsc = (i * 2) + 1;
-      size_type i_rhsc = (i * 2) + 2;
+      size_type iLHSC = (i * 2) + 1; /// Index of LHS child.
+      size_type iRHSC = (i * 2) + 2; /// Index of RHS child.
 
       if (i == 0)
       {
-         if (this->heap[1].priority >= this->heap[2].priority)
+         if (heap[1].priority >= heap[2].priority)
+         {
             return 1;
+         }
          else
+         {
             return 2;
+         }
       }
-
-      if (i_rhsc<this->used &&this->heap[i_rhsc].priority> this->heap[i_lhsc].priority)
-         return i_rhsc;
+      if (iRHSC < used && heap[iRHSC].priority > heap[iLHSC].priority)
+      {
+         return iRHSC; /// Two children present.
+      }
       else
-         return i_lhsc;
+      {
+         return iLHSC; /// One child present.
+      }
    }
 
    p_queue::size_type
@@ -282,16 +322,26 @@ namespace CS3358_SP2024_A7
    //       than that of the other child, if there is one.)
    {
       assert(!(is_leaf(i)));
-      return this->heap[big_child_index(i)].priority;
+      return heap[big_child_index(i)].priority;
    }
 
    void p_queue::swap_with_parent(size_type i)
    // Pre:  (i > 0) && (i < used)
    // Post: The item at heap[i] has been swapped with its parent.
    {
-      assert(i > 0 && i < this->used);
-      ItemType temp = this->heap[i];
-      this->heap[i] = this->heap[parent_index(i)];
-      this->heap[parent_index(i)] = temp;
+      assert(i > 0);
+      assert(i < used);
+
+      /// Find parent index.
+      size_type parentIndex = parent_index(i);
+
+      /// Grab parent item.
+      ItemType temp_item = heap[parentIndex];
+
+      /// Set parent to child item.
+      heap[parentIndex] = heap[i];
+
+      /// Set child to parent item.
+      heap[i] = temp_item;
    }
 }
