@@ -174,30 +174,23 @@ namespace CS3358_SP2024_A7
    void p_queue::pop()
    {
       assert(size() > 0);
-      /// Make simple case fast.
-      if (used == 1)
+      if (this->used == 1)
       {
-         --used;
-         return;
+         this->used -= 1;
       }
-
-      /// Move end data to front.
-      heap[0].data = heap[used - 1].data;
-
-      /// Move end priority to front.
-      heap[0].priority = heap[used - 1].priority;
-      --used;
-
-      /// Create two helper indices.
-      size_type index_parent = 0,
-                index_child = 0;
-
-      /// Swap all parents with children that are larger.
-      while (!is_leaf(index_parent) && heap[index_parent].priority <= big_child_priority(index_parent))
+      else
       {
-         index_child = big_child_index(index_parent);
-         swap_with_parent(big_child_index(index_parent));
-         index_parent = index_child;
+         // swap element
+         size_type entry = 0;
+         this->heap[entry] = this->heap[this->used - 1];
+         while ((!is_leaf(entry)) && (heap[entry].priority <=
+                                      big_child_priority(entry)))
+         {
+            size_type prev_entry = big_child_index(entry);
+            swap_with_parent(big_child_index(entry));
+            entry = prev_entry;
+         }
+         this->used -= 1;
       }
    }
 
@@ -253,8 +246,15 @@ namespace CS3358_SP2024_A7
    // Post: If the item at heap[i] has no children, true has been
    //       returned, otherwise false has been returned.
    {
-      assert(i < used);
-      return (((i * 2) + 1) >= used);
+      //                      assert(i < used);
+      //                      return (((i * 2) + 1) >= used);
+      {
+         assert(i < this->used);
+         if (i >= (this->used - 1) / 2)
+            // if i > (this->used-1)/2, then it is guaranteed a leaf
+            return true;
+         return false;
+      }
    }
 
    p_queue::size_type
