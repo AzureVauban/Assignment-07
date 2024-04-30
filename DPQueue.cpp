@@ -174,15 +174,16 @@ namespace CS3358_SP2024_A7
    void p_queue::pop()
    {
       assert(size() > 0);
-      if (this->used == 1)
+      if (used == 1)
       {
-         this->used -= 1;
+         --used;
+         return;
       }
       else
       {
          // swap element
          size_type entry = 0;
-         this->heap[entry] = this->heap[this->used - 1];
+         heap[entry] = heap[used - 1];
          while ((!is_leaf(entry)) && (heap[entry].priority <=
                                       big_child_priority(entry)))
          {
@@ -190,7 +191,7 @@ namespace CS3358_SP2024_A7
             swap_with_parent(big_child_index(entry));
             entry = prev_entry;
          }
-         this->used -= 1;
+         used --;
       }
    }
 
@@ -249,10 +250,11 @@ namespace CS3358_SP2024_A7
       //                      assert(i < used);
       //                      return (((i * 2) + 1) >= used);
       {
-         assert(i < this->used);
-         if (i >= (this->used - 1) / 2)
-            // if i > (this->used-1)/2, then it is guaranteed a leaf
+         assert(i < used);
+         if (i >= (used - 1) / 2) {
+            // guaranteed a leaf
             return true;
+         }
          return false;
       }
    }
@@ -336,12 +338,12 @@ namespace CS3358_SP2024_A7
       size_type parentIndex = parent_index(i);
 
       /// Grab parent item.
-      ItemType temp_item = heap[parentIndex];
+      ItemType t_item = heap[parentIndex];
 
       /// Set parent to child item.
       heap[parentIndex] = heap[i];
 
       /// Set child to parent item.
-      heap[i] = temp_item;
+      heap[i] = t_item;
    }
 }
